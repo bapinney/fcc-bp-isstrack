@@ -9,6 +9,7 @@
 var chaiHttp = require('chai-http');
 var chai = require('chai');
 var assert = chai.assert;
+var expect = chai.expect;
 var server = require('../server');
 
 chai.use(chaiHttp);
@@ -21,18 +22,28 @@ suite('Functional Tests', function() {
        chai.request(server)
         .post('/api/issues/test')
         .send({
-          issue_title: 'Title',
+          issue_title: 'Functional Test - Every field filled in',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
+          created_by: 'Bob',
           assigned_to: 'Chai and Mocha',
           status_text: 'In QA'
         })
         .end(function(err, res){
+          console.log("At end res");
+          console.dir(res);
           assert.equal(res.status, 200);
-          
+                    
           //fill me in too!
-          
-          done();
+          assert.isTrue(res.body.issueCreated, "Issue Created is true!");
+          assert.isNotNaN(new Date(res.body.result.created_on).getDate(), "Parsed date should not be NaN!");
+          assert.isNotNaN(new Date(res.body.result.updated_on).getDate(), "Parsed date should not be NaN!");
+          assert.isTrue(res.body.result.open);
+          assert.equal(res.body.result.title, 'Functional Test - Every field filled in');
+          assert.equal(res.body.result.text, 'text');
+          assert.equal(res.body.result.created_by, 'Bob');
+          assert.equal(res.body.result.assigned_to, 'Chai and Mocha');
+          assert.equal(res.body.result.status_text, "In QA");
+          done(); 
         });
       });
       
