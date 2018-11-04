@@ -17,7 +17,7 @@ chai.use(chaiHttp);
 suite('Functional Tests', function() {
   
     suite('POST /api/issues/{project} => object with issue data', function() {
-      
+      /*
       test('Every field filled in', function(done) {
        chai.request(server)
         .post('/api/issues/test')
@@ -46,9 +46,53 @@ suite('Functional Tests', function() {
           done(); 
         });
       });
-      
+      */
       test('Required fields filled in', function(done) {
-        
+        chai.request(server)
+        .post('/api/issues/test')
+        .send({
+          issue_title: '',
+          issue_text: 'text',
+          created_by: 'Bob',
+          assigned_to: 'Chai and Mocha',
+          status_text: 'In QA'
+        })
+        .end(function(err, res){
+          console.log("At end res");
+          console.dir(res);
+          assert.equal(res.status, 500);
+          test2(); 
+        });
+        var test2 = function() {chai.request(server)
+        .post('/api/issues/test')
+        .send({
+          issue_title: 'aaa',
+          issue_text: '',
+          created_by: 'Bob',
+          assigned_to: 'Chai and Mocha',
+          status_text: 'In QA'
+        })
+        .end(function(err, res){
+          console.log("At end res");
+          console.dir(res);
+          assert.equal(res.status, 500);
+          done(); 
+        });};
+        var test3 = function() {chai.request(server)
+        .post('/api/issues/test')
+        .send({
+          issue_title: 'fff',
+          issue_text: 'ggg',
+          created_by: '',
+          assigned_to: 'Chai and Mocha',
+          status_text: 'In QA'
+        })
+        .end(function(err, res){
+          console.log("At end res");
+          console.dir(res);
+          assert.equal(res.status, 500);
+          done(); 
+        });};
       });
       
       test('Missing required fields', function(done) {
